@@ -14,7 +14,7 @@ Features realized:
 Deploy Steps：
 -----
 
-### AWS VPC Setup
+#### AWS VPC Setup
 
 1. create VPC
 2. create public-subnet
@@ -37,8 +37,11 @@ Deploy Steps：
 
 2. Configure confidential login between hosts
     ```
-    *gennerate ssh public and private keys on the ansible server
-    *copy public key content to client server
+    * gennerate ssh public and private keys on the ansible server
+       ssh-keygen -t rsa
+
+    * copy public key content to file '.ssh/authorized_keys' on client hosts
+       
     ```
      
 3. set inventory file /etc/ansible/hosts
@@ -48,11 +51,36 @@ Deploy Steps：
     ```
 
 4. prepare nginx roles files
+    ```
+     tree in roles:
+     └── nginx
+        ├── default
+        ├── files
+        │   └── nginx-1.17.5.tar.gz
+        ├── handlers
+        ├── meta
+        ├── tasks
+        │   └── main.yml
+        ├── templates
+        │   ├── nginx.conf.j2
+        └── vars
 
+    ```
 5. write playbook file nginx.yml
-6. run ansible-playbook
+    ```
+    - name: install nginx use roles nginx
+      hosts: nginxserver
+      remote_user: root
+      roles:
+      - nginx
+    ```
 
-### Cosmos setup
+6. run ansible-playbook
+    ```
+     ansible-playbook nginx.yml
+    ```
+
+#### Cosmos setup
 
 1. prepare shell script for cosmos install steps
 2. run script
