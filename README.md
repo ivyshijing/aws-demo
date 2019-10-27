@@ -26,19 +26,19 @@ Deploy Steps：
 
 #Nginx setup by Ansible playbook
 
-1. install ansible<\br>
-    `sudo apt update<\br>
-    sudo apt install software-properties-common<\br>
-    sudo apt-add-repository ppa:ansible/ansible<\br>
-    sudo apt update<\br>
+1. install ansible<br>
+    `sudo apt update<br>
+    sudo apt install software-properties-common<br>
+    sudo apt-add-repository ppa:ansible/ansible<br>
+    sudo apt update<br>
     sudo apt install ansible`
 
-2. Configure confidential login between hosts<\br>
-    `*gennerate ssh public and private keys on the ansible server<\br>
+2. Configure confidential login between hosts<br>
+    `*gennerate ssh public and private keys on the ansible server<br>
      *copy public key content to client server`
      
-3. set inventory file /etc/ansible/hosts<\br>
-    `[nginxserver]<\br>
+3. set inventory file /etc/ansible/hosts<br>
+    `[nginxserver]<br>
       10.0.13.101`
 
 4. prepare nginx roles files
