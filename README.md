@@ -14,7 +14,7 @@ Features realized:
 Deploy Steps：
 -----
 
-#AWS VPC Setup
+### AWS VPC Setup
 
 1. create VPC
 2. create public-subnet
@@ -24,7 +24,7 @@ Deploy Steps：
 6. init EC2 instance
 7. bind EIP to EC2 instance
 
-#Nginx setup by Ansible playbook
+#### Nginx setup by Ansible playbook
 
 1. install ansible
     ```
@@ -52,7 +52,7 @@ Deploy Steps：
 5. write playbook file nginx.yml
 6. run ansible-playbook
 
-#Cosmos setup
+### Cosmos setup
 
 1. prepare shell script for cosmos install steps
 2. run script
