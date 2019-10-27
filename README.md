@@ -1,4 +1,3 @@
-# aws-demo
 Cosmos service deploy on AWS Cloud ENV
 ======
 Usage:
@@ -28,9 +27,22 @@ Deploy Steps：
 #Nginx setup by Ansible playbook
 
 1. install ansible
-2. ssh-keygen
+    `sudo apt update
+    sudo apt install software-properties-common
+    sudo apt-add-repository ppa:ansible/ansible
+    sudo apt update
+    sudo apt install ansible`
+
+2. Configure confidential login between hosts
+    `*gennerate ssh public and private keys on the ansible server
+     *copy public key content to client server`
+     
 3. set inventory file /etc/ansible/hosts
+    `[nginxserver]
+      10.0.13.101`
+
 4. prepare nginx roles files
+
 5. write playbook file nginx.yml
 6. run ansible-playbook
 

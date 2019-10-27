@@ -1,0 +1,6 @@
+- name: install nginx use roles nginx
+  hosts: nginxserver
+  remote_user: root
+  roles:
+    - nginx
+~              
