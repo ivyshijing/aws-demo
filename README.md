@@ -2,6 +2,13 @@ Cosmos service deploy on AWS Cloud ENV
 ======
 Usage:
 ------
+```
+    1. start cosmos service
+       * ssh -i $keyfile 18.140.29.205 -p 8090
+       * ~/go/bin/cosmos_start.sh
+    2. GET http://18.140.29.205:26657
+
+```
 Features realized:
 1. API call nginx 26657 port to access cosmos service
    
@@ -183,7 +190,7 @@ Deploy Steps：
    ```
     setup.sh:
 
-     !/bin/bash
+     #!/bin/bash
 
      GO_VERSION=go1.12.5
      COSMOS_VERSION=v0.35.0
