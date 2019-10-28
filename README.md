@@ -17,12 +17,47 @@ Deploy Steps：
 #### AWS VPC Setup
 
 1. create VPC
-2. create public-subnet
-3. create private-subnet
-4. create EIP
-5. setup NAT gateway
-6. init EC2 instance
-7. bind EIP to EC2 instance
+   ```
+    set IPv4 CIDR block: 10.0.0.0/16
+   ```
+2. create two subnet
+   ```
+    IPv4 CIDR block: 10.0.0.0/20
+    IPv4 CIDR block: 10.0.17.0/20 
+   ```
+3. config 10.0.0.0/20 as public-subnet
+   ```
+    * create a internet gateway
+    * create a route table for VPC 10.0.0.0/16
+    * config the route table, add a entry routes make all other IPv4 subnet traffic to the Internet gateway
+      Destination	Target
+      10.0.0.0/16       local
+      0.0.0.0/0         igw-id
+    * on the public subnet associate the above route table
+   ``` 
+4. create security group
+   ```
+    * public-subnet bind security group: open port 22,80,8090,26657 
+    * private-subnet bind security group: open port 22,80,6060, 20000-30000 
+   ```
+5. init three EC2 instance
+   ```
+    * init 2 instance in the public-subnet:
+       ansible EC2 instance
+       nginx EC2 instance
+    * init 1 instance in the private-subnet:
+       cosmos server EC2 instance
+    * bind security group when create EC2 instance
+   ```
+6. create two EIP and bind to ansible and nginx EC2 instance 
+7. setup NAT gateway
+   ```
+    * create a NAT gateway in public-subnet and bind the EIP to it
+    * create a new route table bind to the private-subnet
+       Destination       Target
+       10.0.0.0/16       local
+       0.0.0.0/0         NAT-id
+   ```
 
 #### Nginx setup by Ansible playbook
 
@@ -140,5 +175,76 @@ Deploy Steps：
 
 #### Cosmos setup
 
-1. prepare shell script for cosmos install steps
-2. run script
+###### Steps: 
+        * install go, gaiad, gaiacli
+        * config a full node
+
+1. reference the cosmos.network website and other document from google,try the steps and write a shell script as below:
+   ```
+    setup.sh:
+
+     !/bin/bash
+
+     GO_VERSION=go1.12.5
+     COSMOS_VERSION=v0.35.0
+
+     echo "update"
+     sudo apt-get update
+     sudo apt-get upgrade -y
+     echo "Checking required packages are installed"
+     sudo apt-get install -y wget git make gcc curl
+
+     echo "Installing go"
+     wget https://dl.google.com/go/$GO_VERSION.linux-amd64.tar.gz
+     sudo tar -C /usr/local -xzf $GO_VERSION.linux-amd64.tar.gz
+     rm $GO_VERSION.linux-amd64.tar.gz
+
+     echo "Setting up environment variables for GO"
+
+     mkdir -p $HOME/go/bin
+     echo "export GOPATH=$HOME/go" >> ~/.bashrc
+     echo "export GOBIN=\$GOPATH/bin" >> ~/.bashrc
+     echo "export PATH=\$PATH:\$GOBIN:/usr/local/go/bin" >> ~/.bashrc
+     source ~/.bashrc
+     export GOPATH=$HOME/go
+     export GOBIN=$GOPATH/bin
+     export PATH=$PATH:$GOBIN:/usr/local/go/bin
+
+     echo "Installing cosmos-sdk"
+
+     mkdir -p $GOPATH/cosmos
+     cd $GOPATH/cosmos
+     git clone https://github.com/cosmos/cosmos-sdk
+     cd cosmos-sdk && git checkout $COSMOS_VERSION
+     make tools install
+
+     gaiad version --long
+     gaiacli version --long
+
+     echo "Setup config for gaia client"
+     gaiacli config node mcv-sentry-1.mycosmosvalidator.com:26657
+     gaiacli config trust-node true
+     gaiacli config chain-id cosmoshub-2
+
+     echo "Setting up gaia service"
+     gaiad init ivy
+
+     echo "Need genesis.json to connect to testnet"
+     rm $HOME/.gaiad/config/genesis.json
+     curl https://raw.githubusercontent.com/cosmos/launch/master/genesis.json > $HOME/.gaiad/config/genesis.json
+     echo "Need to add persistent_peer in $HOME/.gaiad/config/config.toml before start"
+   ```
+2. modify config file
+   ```
+     config the address and port in the file $HOME/.gaiad/config.toml
+   ```
+3. prepare two shell script for service start and stop
+    ```
+     * start: $HOME/go/bin/cosmos_start.sh
+      #!/bin/bash
+      nohup gaiad start &>$HOME/gaiad.log &
+ 
+     * stop: $HOME/go/bin/cosmos_stop.sh
+      #!/bin/bash
+      ps -ef | grep gaiad | grep -v grep | awk '{print $2}' | xargs -i kill -9 {}
+    ```
