@@ -33,22 +33,22 @@ git clone https://github.com/cosmos/cosmos-sdk
 cd cosmos-sdk && git checkout $COSMOS_VERSION
 make tools install
 
+#check the version 
 gaiad version --long
 gaiacli version --long
 
-echo "Setup config for gaia client"
-gaiacli config node mcv-sentry-1.mycosmosvalidator.com:26657
-gaiacli config trust-node true
-gaiacli config chain-id cosmoshub-2
-
+#init a node
 echo "Setting up gaia service"
 gaiad init ivy
 
+# connect a testnet
+### copy the Genesis File
 echo "Need genesis.json to connect to testnet"
 rm $HOME/.gaiad/config/genesis.json
 curl https://raw.githubusercontent.com/cosmos/launch/master/genesis.json > $HOME/.gaiad/config/genesis.json
+
+### modify persistent_peer
 echo "Need to add persistent_peer in $HOME/.gaiad/config/config.toml before start"
 
 
-# nohup gaiad start &>$GOPATH/cosmos/gaiad.log &
 

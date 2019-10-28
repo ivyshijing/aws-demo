@@ -38,7 +38,7 @@ Deploy Steps：
 4. create security group
    ```
     * public-subnet bind security group: open port 22,80,8090,26657 
-    * private-subnet bind security group: open port 22,80,6060, 20000-30000 
+    * private-subnet bind security group: open port 22,80,6060,26656-26660 
    ```
 5. init three EC2 instance
    ```
@@ -218,25 +218,28 @@ Deploy Steps：
      cd cosmos-sdk && git checkout $COSMOS_VERSION
      make tools install
 
+     #check the version 
      gaiad version --long
      gaiacli version --long
-
-     echo "Setup config for gaia client"
-     gaiacli config node mcv-sentry-1.mycosmosvalidator.com:26657
-     gaiacli config trust-node true
-     gaiacli config chain-id cosmoshub-2
-
+     
+     #init a node
      echo "Setting up gaia service"
      gaiad init ivy
 
+     # connect a testnet
+     ### copy the Genesis File
      echo "Need genesis.json to connect to testnet"
      rm $HOME/.gaiad/config/genesis.json
      curl https://raw.githubusercontent.com/cosmos/launch/master/genesis.json > $HOME/.gaiad/config/genesis.json
+
+     ### modify persistent_peer
      echo "Need to add persistent_peer in $HOME/.gaiad/config/config.toml before start"
    ```
-2. modify config file
+2. modify config file to add persistent_peer
    ```
-     config the address and port in the file $HOME/.gaiad/config.toml
+     config persistent_peers in the file $HOME/.gaiad/config.toml
+     persistent_peers = "89e4b72625c0a13d6f62e3cd9d40bfc444cbfa77@34.65.6.52:26656"
+
    ```
 3. prepare two shell script for service start and stop
     ```
