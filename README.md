@@ -4,7 +4,7 @@ Usage:
 ------
 ```
     1. start cosmos service
-       * ssh -i $keyfile 18.140.29.205 -p 8090
+       * ssh -i $keyfile ubuntu@18.140.29.205 -p 8090
        * ~/go/bin/cosmos_start.sh
     2. GET http://18.140.29.205:26657
 
@@ -16,7 +16,7 @@ Features realized:
 
 2. SSH call nginx 8090 port to login cosmos server
 
-   ssh -i keyfile 18.140.29.205 -p 8090
+   ssh -i keyfile ubuntu@18.140.29.205 -p 8090
 
 Deploy Steps：
 -----
